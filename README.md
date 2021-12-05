@@ -12,4 +12,8 @@
 
 1. Master (CTO)
 
-2. Noah (Front-end developer)
+2. Noah (Full stack developer)
+
+3. Misaki (Back end developer and Devops)
+
+4. John Doe (Mark up and designer)
