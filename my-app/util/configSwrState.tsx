@@ -30,7 +30,7 @@ export const useGlobalState = () => {
 
 export const useInitiateState = (initiateObj:{
   [key:string]: any;
-},setstate:Dispatch<SetStateAction<any>>) => { 
+},setstate:Dispatch<SetStateAction<any>>,mutate:(key: ESwrStateKeys, value: (prev?: any) => any)=>void) => { 
     if (typeof window !== 'undefined') {    
         const state : any =  {
         ...window.swrState,
@@ -39,6 +39,7 @@ export const useInitiateState = (initiateObj:{
         let value = initiateObj[initiateKey]
         state[initiateKey] = value;
         window.swrState = state;
-        setstate(value)
+        mutate && mutate(initiateKey as ESwrStateKeys,()=>value);
+        setstate && setstate(value)
     }  
 }

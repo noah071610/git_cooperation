@@ -11,9 +11,9 @@ declare global {
 
 function MyApp({ Component, pageProps }: AppProps) {
   if (typeof window !== 'undefined') {
+    console.log(swrState);
     window.swrState = swrState
   }
-  
   return <Component {...pageProps} />
 }
 
