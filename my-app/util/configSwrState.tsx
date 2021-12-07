@@ -1,25 +1,38 @@
-import { Dispatch, SetStateAction } from "react";
 import useSWR from "swr";
 
 
 export const swrState = {
   popup:true,
   popdown:true,
-  is:1
-};
+  is:1,
+  obj:{a:1,b:2}
+} as const;
 
 export type ISwrState= typeof swrState
 
-export type ESwrStateKeys = keyof typeof swrState
+export type ESwrStateKeys = keyof typeof swrState;
 
-export const useGlobalState = () => {
+export const useGlobalState = (initialValue?:{
+  [key in any]: any;
+}) => {
   const { data,mutate,error } = useSWR("swrState",()=>window.swrState);
+  if(typeof window !== 'undefined' && initialValue) {
+    const swrGlobalState :any = {
+      ...window.swrState,
+    };
+    const initiateKeyList = Object.keys(initialValue);
+    for (const key of initiateKeyList) {
+      let value :any = initialValue[key];
+      swrGlobalState[key] = value;
+    }
+    window.swrState = swrGlobalState;
+  }
   return {data, mutate: (key:ESwrStateKeys,value:(prev?:any)=>any) => {
       const state :any = {
         ...window.swrState,
       };
-      if(state[key]  != undefined) {
-        state[key] = value(state[key]);
+      if(data && state[key]  != undefined) {
+        state[key] = value(data[key]);
         window.swrState = state;
         return mutate();
       } else {
@@ -27,19 +40,4 @@ export const useGlobalState = () => {
       }
   },error}
 }
-
-export const useInitiateState = (initiateObj:{
-  [key:string]: any;
-},setstate:Dispatch<SetStateAction<any>>,mutate:(key: ESwrStateKeys, value: (prev?: any) => any)=>void) => { 
-    if (typeof window !== 'undefined') {    
-        const state : any =  {
-        ...window.swrState,
-        };
-        const [initiateKey] = Object.keys(initiateObj);
-        let value = initiateObj[initiateKey]
-        state[initiateKey] = value;
-        window.swrState = state;
-        mutate && mutate(initiateKey as ESwrStateKeys,()=>value);
-        setstate && setstate(value)
-    }  
-}
+// ,mutate:(key: ESwrStateKeys, value: (prev?: any) => any)=>void) 

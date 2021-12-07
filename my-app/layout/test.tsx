@@ -1,8 +1,8 @@
-import { useGlobalState } from "../pages";
+import { useGlobalState } from "util/configSwrState";
 
 
 export default function Test() {
-  const {data , mutate} = useGlobalState();
+  const {data , mutate} = useGlobalState({is:888});
   return (
     <div>
       Testing <br/>
